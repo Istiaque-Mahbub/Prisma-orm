@@ -53,6 +53,7 @@ const getUserById = async(id:number)=>{
 }
 
 const updateUser = async (id: number, payload: Partial<User>) => {
+ 
     const result = await prisma.user.update({
         where: {
             id

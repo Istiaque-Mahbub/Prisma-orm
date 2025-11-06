@@ -10,10 +10,25 @@ const createPost =async (req:Request,res:Response)=>{
         console.log(error)
     }
 }
+const getBlogStat =async (req:Request,res:Response)=>{
+    try {
+        const result = await PostService.getBlogStat()
+        res.status(200).json(result)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const getAllPosts = async (req: Request, res: Response) => {
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const search = req.query.search as string || ""
+    const sortBy = req.query.sortBy as string || "cratedAt"
+    const sortOrder = req.query.sortOrder as string || "desc"
+    const isFeatured = req.query.isFeatured ? req.query.isFeatured ==="true" : undefined
+    const tags = req.query.tags ?  (req.query.tags as string).split(",") :[]
     try {
-        const result = await PostService.getAllPosts();
+        const result = await PostService.getAllPosts({page,limit,search,isFeatured,tags,sortBy,sortOrder});
         res.json(result);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch posts", details: err });
@@ -36,4 +51,4 @@ const deletePost = async (req: Request, res: Response) => {
     res.json({ message: "Post deleted" });
 };
 
-export const PostController = {createPost,getAllPosts,getPostById,deletePost,updatePost}
+export const PostController = {createPost,getAllPosts,getPostById,deletePost,updatePost,getBlogStat}
